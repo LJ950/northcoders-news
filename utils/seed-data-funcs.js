@@ -9,7 +9,7 @@ exports.formatArticleData = function(articleData) {
 exports.indexArticleTitle = function(articleData) {
   let titlesID = {};
   articleData.forEach(function(article, index) {
-    titlesID[article.title] = index + 1;
+    titlesID[article.title] = article.article_id;
   });
   return titlesID;
 };

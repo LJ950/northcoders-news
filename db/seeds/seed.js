@@ -21,15 +21,17 @@ exports.seed = (knex, Promise) => {
     )
     .then(() => {
       const formattedArticleData = formatArticleData(articleData);
-      knex("articles")
+      return knex("articles")
         .insert(formattedArticleData)
         .returning("*");
     })
-    .then(() => {
+    .then(articles => {
       const formattedCommentData = formatCommentData(
         commentData,
-        indexArticleTitle(articleData)
+        indexArticleTitle(articles)
       );
+      // console.log(articles[0]);
+      console.log(formattedCommentData[0]);
       return knex("comments")
         .insert(formattedCommentData)
         .returning("*");

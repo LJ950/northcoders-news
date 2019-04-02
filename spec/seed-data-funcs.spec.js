@@ -66,10 +66,11 @@ describe("seedArticles", () => {
     });
   });
 });
-describe("seedComments", () => {
+describe.only("seedComments", () => {
   describe("indexArticleTitle", () => {
     const articles = [
       {
+        article_id: 1,
         title: "Living in the shadow of a great man",
         topic: "mitch",
         author: "butter_bridge",
@@ -78,6 +79,7 @@ describe("seedComments", () => {
         votes: 100
       },
       {
+        article_id: 2,
         title: "They're not exactly dogs, are they?",
         topic: "mitch",
         author: "butter_bridge",
@@ -89,6 +91,7 @@ describe("seedComments", () => {
       expect(
         indexArticleTitle([
           {
+            article_id: 1,
             title: "Living in the shadow of a great man",
             topic: "mitch",
             author: "butter_bridge",
@@ -107,7 +110,7 @@ describe("seedComments", () => {
     });
   });
 
-  describe.only("formatCommentData", () => {
+  describe("formatCommentData", () => {
     const articlesID = {
       "Living in the shadow of a great man": 1,
       "They're not exactly dogs, are they?": 2
