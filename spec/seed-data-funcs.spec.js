@@ -108,74 +108,94 @@ describe("seedComments", () => {
   });
 
   describe.only("formatCommentData", () => {
-    const comments = [
-      {
-        body:
-          "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
-        belongs_to: "Living in the shadow of a great man",
-        created_by: "butter_bridge",
-        votes: 14,
-        created_at: 1479818163389
-      },
-      {
-        body:
-          "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-        belongs_to: "They're not exactly dogs, are they?",
-        created_by: "butter_bridge",
-        votes: 16,
-        created_at: 1511354163389
-      }
-    ];
     const articlesID = {
       "Living in the shadow of a great man": 1,
       "They're not exactly dogs, are they?": 2
     };
-    it("updates property belongs_to to article_id and replaces the timestamp with a date", () => {
-      const myDate = new Date(1479818163389);
-      expect(
-        formatCommentData(
-          [
-            {
-              body:
-                "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
-              belongs_to: "Living in the shadow of a great man",
-              created_by: "butter_bridge",
-              votes: 14,
-              created_at: 1479818163389
-            }
-          ],
-          articlesID
-        )
-      ).to.eql([
+    it("updates property belongs_to to article_id", () => {
+      const comment = [
         {
           body:
             "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
-          article_id: 1,
+          belongs_to: "Living in the shadow of a great man",
           created_by: "butter_bridge",
           votes: 14,
-          created_at: myDate
+          created_at: 1479818163389
         }
-      ]);
+      ];
+      const result = formatCommentData(comment, articlesID);
+      expect(result[0]).to.contain.keys("article_id");
+      expect(result[0]).to.not.contain.keys("belongs_to");
     });
-    it("updates property belongs_to to article_id and replaces the timestamp with a date", () => {
+    it("updates the timestamp with a date", () => {
+      const comment = [
+        {
+          body:
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          belongs_to: "Living in the shadow of a great man",
+          created_by: "butter_bridge",
+          votes: 14,
+          created_at: 1479818163389
+        }
+      ];
+      const myDate = new Date(1479818163389);
+      expect(formatCommentData(comment, articlesID)[0].created_at).to.eql(
+        myDate
+      );
+    });
+    it("updates created_by to author", () => {
+      const comment = [
+        {
+          body:
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          belongs_to: "Living in the shadow of a great man",
+          created_by: "butter_bridge",
+          votes: 14,
+          created_at: 1479818163389
+        }
+      ];
+      const result = formatCommentData(comment, articlesID);
+      expect(result[0]).to.contain.keys("author");
+      expect(result[0]).to.not.contain.keys("created_by");
+    });
+
+    it("works for multiple objects and does not delete values", () => {
+      const comments = [
+        {
+          body:
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          belongs_to: "Living in the shadow of a great man",
+          created_by: "butter_bridge",
+          votes: 14,
+          created_at: 1479818163389
+        },
+        {
+          body:
+            "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          belongs_to: "They're not exactly dogs, are they?",
+          created_by: "butter_bridge",
+          votes: 16,
+          created_at: 1511354163389
+        }
+      ];
       const myDate1 = new Date(1479818163389);
       const myDate2 = new Date(1511354163389);
       expect(formatCommentData(comments, articlesID)).to.eql([
         {
           body:
             "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
-          article_id: 1,
-          created_by: "butter_bridge",
           votes: 14,
-          created_at: myDate1
+          created_at: myDate1,
+          article_id: 1,
+          author: "butter_bridge"
         },
         {
           body:
             "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-          article_id: 2,
-          created_by: "butter_bridge",
           votes: 16,
-          created_at: myDate2
+          created_at: myDate2,
+          article_id: 2,
+          author: "butter_bridge"
         }
       ]);
     });

@@ -18,8 +18,10 @@ exports.indexArticleTitle = function(articleData) {
 exports.formatCommentData = function(commentData, articlesID) {
   commentData.map(function(comment) {
     comment.article_id = articlesID[comment.belongs_to];
-    comment.created_at = new Date(comment.created_at);
     delete comment.belongs_to;
+    comment.created_at = new Date(comment.created_at);
+    comment.author = comment.created_by;
+    delete comment.created_by;
   });
   return commentData;
 };
