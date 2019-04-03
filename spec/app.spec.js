@@ -60,7 +60,7 @@ describe("/", () => {
             );
           });
       });
-      describe("/:article_id", () => {
+      describe.only("/:article_id", () => {
         it("GET status:200 and returns requested article", () => {
           return request
             .get("/api/articles/2")
@@ -79,6 +79,32 @@ describe("/", () => {
               expect(+body.articles.comment_count).to.equal(1);
               expect(body.articles.article_id).to.equal(2);
             });
+        });
+        it("GET status:400 responds with error message when bad request", () => {
+          return request
+            .get("/api/articles/abc")
+            .expect(400)
+            .then(res => {
+              expect(res.body.msg).to.equal("Bad Request");
+            });
+        });
+        it("GET status:404 responds with error message when non existent id is requested", () => {
+          return request
+            .get("/api/articles/999")
+            .expect(404)
+            .then(res => {
+              expect(res.body.msg).to.equal("Not Found");
+            });
+        });
+        it("GET status:405 responds with error message when method not allowed", () => {
+          const reqTypes = ["post", "delete", "put"];
+          reqTypes.forEach(reqType => {
+            return request[reqType]("/api/articles/1")
+              .expect(405)
+              .then(res => {
+                expect(res.body.msg).to.equal("Method Not Allowed");
+              });
+          });
         });
       });
     });
