@@ -66,7 +66,7 @@ describe("seedArticles", () => {
     });
   });
 });
-describe.only("seedComments", () => {
+describe("seedComments", () => {
   describe("indexArticleTitle", () => {
     const articles = [
       {

@@ -30,8 +30,6 @@ exports.seed = (knex, Promise) => {
         commentData,
         indexArticleTitle(articles)
       );
-      // console.log(articles[0]);
-      console.log(formattedCommentData[0]);
       return knex("comments")
         .insert(formattedCommentData)
         .returning("*");
