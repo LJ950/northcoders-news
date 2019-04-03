@@ -60,7 +60,7 @@ describe("/", () => {
             );
           });
       });
-      describe.only("/:article_id", () => {
+      describe("/:article_id", () => {
         it("GET status:200 and returns requested article", () => {
           return request
             .get("/api/articles/2")
