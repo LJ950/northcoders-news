@@ -7,6 +7,29 @@ const {
 
 describe("seedArticles", () => {
   describe("formatArticleData", () => {
+    it("does not mutate the array", () => {
+      const data = [
+        {
+          title: "Running a Node App",
+          topic: "coding",
+          author: "jessjelly",
+          body:
+            "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+          created_at: 1471522072389
+        }
+      ];
+      const myDate = new Date(1471522072389);
+      expect(formatArticleData(data)).to.not.equal([
+        {
+          title: "Running a Node App",
+          topic: "coding",
+          author: "jessjelly",
+          body:
+            "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+          created_at: myDate
+        }
+      ]);
+    });
     it("returns an array of the same length given", () => {
       expect(
         formatArticleData([
@@ -115,6 +138,29 @@ describe("seedComments", () => {
       "Living in the shadow of a great man": 1,
       "They're not exactly dogs, are they?": 2
     };
+    it("does not mutate the array", () => {
+      const comments = [
+        {
+          body:
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          belongs_to: "Living in the shadow of a great man",
+          created_by: "butter_bridge",
+          votes: 14,
+          created_at: 1479818163389
+        }
+      ];
+      const myDate1 = new Date(1479818163389);
+      expect(formatCommentData(comments, articlesID)).to.not.equal([
+        {
+          body:
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          votes: 14,
+          created_at: myDate1,
+          article_id: 1,
+          author: "butter_bridge"
+        }
+      ]);
+    });
     it("updates property belongs_to to article_id", () => {
       const comment = [
         {

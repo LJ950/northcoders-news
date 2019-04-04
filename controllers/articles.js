@@ -1,7 +1,8 @@
 const {
   fetchArticles,
   updateArticle,
-  deleteArticle
+  deleteArticle,
+  fetchArticleComments
 } = require("../models/articles");
 
 exports.getArticles = (req, res, next) => {

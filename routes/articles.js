@@ -6,6 +6,7 @@ const {
   updateArticleByID,
   deleteArticleByID
 } = require("../controllers/articles");
+const { getCommentsByArticle } = require("../controllers/comments");
 const { methodNotAllowed } = require("../errors/index");
 
 articlesRouter.route("/").get(getArticles);
@@ -15,5 +16,5 @@ articlesRouter
   .patch(updateArticleByID)
   .delete(deleteArticleByID)
   .all(methodNotAllowed);
-
+articlesRouter.route("/:article_id/comments").get(getCommentsByArticle);
 module.exports = { articlesRouter };

@@ -33,5 +33,8 @@ exports.seed = (knex, Promise) => {
       return knex("comments")
         .insert(formattedCommentData)
         .returning("*");
+    })
+    .then(comments => {
+      // console.log(comments);
     });
 };
