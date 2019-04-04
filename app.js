@@ -4,6 +4,7 @@ const {
   badRequest,
   routeNotFound,
   methodNotAllowed,
+  unprocessableEntity,
   handle500
 } = require("./errors");
 
@@ -18,6 +19,8 @@ app.use(badRequest);
 app.use(routeNotFound);
 
 app.use(methodNotAllowed);
+
+app.use(unprocessableEntity);
 
 app.use(handle500);
 

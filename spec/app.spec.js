@@ -8,7 +8,7 @@ const connection = require("../db/connection");
 
 const request = supertest(app);
 
-describe("/", () => {
+describe.only("/", () => {
   beforeEach(() => connection.seed.run());
   after(() => connection.destroy());
 
@@ -43,6 +43,7 @@ describe("/", () => {
       });
     });
     describe("/articles", () => {
+      //GETs
       it("GET status:200 and returns all articles", () => {
         return request
           .get("/api/articles")
@@ -80,6 +81,69 @@ describe("/", () => {
               expect(body.articles.article_id).to.equal(2);
             });
         });
+
+        //Patch
+        it("POST status:201 responds with updated article", () => {
+          return request
+            .patch("/api/articles/1")
+            .send({
+              title: "Updated Title",
+              body: "Existence is no longer challenging"
+            })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles).to.eql({
+                article_id: 1,
+                author: "butter_bridge",
+                title: "Updated Title",
+                body: "Existence is no longer challenging",
+                topic: "mitch",
+                created_at: "2018-11-15T12:21:54.171Z",
+                votes: 100
+              });
+            });
+        });
+        it("POST status:201 increments the vote count", () => {
+          return request
+            .patch("/api/articles/1")
+            .send({
+              votes: 10
+            })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles.votes).to.eql(110);
+            });
+        });
+        it("POST status:201 decrements the vote count", () => {
+          return request
+            .patch("/api/articles/1")
+            .send({
+              votes: -10
+            })
+            .expect(200)
+            .then(({ body }) => {
+              expect(body.articles.votes).to.eql(90);
+            });
+        });
+
+        //delete
+        it("DELETE status:204 no content returned", () => {
+          return request
+            .delete("/api/articles/1")
+            .expect(204)
+            .then(() => {
+              return request
+                .get("/api/articles")
+                .then(({ body }) => {
+                  expect(body.articles.length).to.eql(11);
+                })
+                .then(() => {
+                  return request.get("/api/articles/1").expect(404);
+                });
+            });
+        });
+
+        //errors
         it("GET status:400 responds with error message when bad request", () => {
           return request
             .get("/api/articles/abc")
@@ -97,14 +161,27 @@ describe("/", () => {
             });
         });
         it("GET status:405 responds with error message when method not allowed", () => {
-          const reqTypes = ["post", "delete", "put"];
-          reqTypes.forEach(reqType => {
-            return request[reqType]("/api/articles/1")
-              .expect(405)
-              .then(res => {
-                expect(res.body.msg).to.equal("Method Not Allowed");
-              });
-          });
+          const reqTypes = ["post", "put"];
+          return Promise.all(
+            reqTypes.map(reqType => {
+              return request[reqType]("/api/articles/1")
+                .expect(405)
+                .then(res => {
+                  expect(res.body.msg).to.equal("Method Not Allowed");
+                });
+            })
+          );
+        });
+        it("POST status:422 responds with error when update request cannot be processed", () => {
+          return request
+            .patch("/api/articles/1")
+            .send({
+              article_id: 5
+            })
+            .expect(422)
+            .then(res => {
+              expect(res.body.msg).to.eql("Not Updated");
+            });
         });
       });
     });

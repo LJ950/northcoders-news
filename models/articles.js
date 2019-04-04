@@ -19,3 +19,22 @@ exports.fetchArticles = ({ article_id }) => {
       if (article_id) builder.where("articles.article_id", "=", article_id);
     });
 };
+
+exports.updateArticle = ({ params, body }) => {
+  const votes = { votes: 0 };
+  if (body.votes) {
+    votes.votes = body.votes;
+    delete body.votes;
+  }
+  return connection("articles")
+    .where("article_id", "=", params.article_id)
+    .update(body, Object.keys(body))
+    .increment(votes)
+    .returning("*");
+};
+
+exports.deleteArticle = ({ article_id }) => {
+  return connection("articles")
+    .where("article_id", "=", article_id)
+    .del();
+};

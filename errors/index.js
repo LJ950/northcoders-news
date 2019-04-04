@@ -11,8 +11,12 @@ exports.routeNotFound = (err, req, res, next) => {
   } else next(err);
 };
 
-exports.methodNotAllowed = (req, res) => {
+exports.methodNotAllowed = (req, res, next) => {
   res.status(405).send({ msg: "Method Not Allowed" });
+};
+
+exports.unprocessableEntity = (err, req, res, next) => {
+  res.status(422).send({ msg: "Not Updated" });
 };
 
 exports.handle500 = (err, req, res, next) => {

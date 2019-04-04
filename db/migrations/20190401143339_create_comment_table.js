@@ -10,7 +10,8 @@ exports.up = function(knex, Promise) {
     commentsTable
       .integer("article_id")
       .references("article_id")
-      .inTable("articles");
+      .inTable("articles")
+      .onDelete("cascade");
     commentsTable.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };
