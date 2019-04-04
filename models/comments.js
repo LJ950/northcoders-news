@@ -10,3 +10,10 @@ exports.fetchArticleComments = (
     .where({ article_id })
     .orderBy(sort_by, order);
 };
+
+exports.addCommentToArticle = ({ params, body }) => {
+  body.author = body.username;
+  body.article_id = params.article_id;
+  delete body.username;
+  return connection("comments").insert(body, Object.keys(body));
+};

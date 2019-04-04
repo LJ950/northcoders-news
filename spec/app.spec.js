@@ -62,7 +62,7 @@ describe("/", () => {
             );
           });
       });
-      describe("/:article_id", () => {
+      describe("articles/:article_id", () => {
         it("GET status:200 and returns requested article", () => {
           return request
             .get("/api/articles/2")
@@ -83,7 +83,6 @@ describe("/", () => {
             });
         });
 
-        //Patch
         it("POST status:201 responds with updated article", () => {
           return request
             .patch("/api/articles/1")
@@ -127,7 +126,6 @@ describe("/", () => {
             });
         });
 
-        //delete
         it("DELETE status:204 deletes an article", () => {
           return request
             .delete("/api/articles/1")
@@ -143,50 +141,49 @@ describe("/", () => {
                 });
             });
         });
-
-        describe("errors", () => {
-          it("GET status:400 responds with error message when bad request", () => {
-            return request
-              .get("/api/articles/abc")
-              .expect(400)
-              .then(res => {
-                expect(res.body.msg).to.equal("Bad Request");
-              });
-          });
-          it("GET status:404 responds with error message when non existent id is requested", () => {
-            return request
-              .get("/api/articles/999")
-              .expect(404)
-              .then(res => {
-                expect(res.body.msg).to.equal("Not Found");
-              });
-          });
-          it("GET status:405 responds with error message when method not allowed", () => {
-            const reqTypes = ["post", "put"];
-            return Promise.all(
-              reqTypes.map(reqType => {
-                return request[reqType]("/api/articles/1")
-                  .expect(405)
-                  .then(res => {
-                    expect(res.body.msg).to.equal("Method Not Allowed");
-                  });
-              })
-            );
-          });
-          it("POST status:422 responds with error when update request cannot be processed", () => {
-            return request
-              .patch("/api/articles/1")
-              .send({
-                article_id: 5
-              })
-              .expect(422)
-              .then(res => {
-                expect(res.body.msg).to.eql("Not Updated");
-              });
-          });
+      });
+      describe("errors", () => {
+        it("GET status:400 responds with error message when bad request", () => {
+          return request
+            .get("/api/articles/abc")
+            .expect(400)
+            .then(res => {
+              expect(res.body.msg).to.equal("Bad Request");
+            });
+        });
+        it("GET status:404 responds with error message when non existent id is requested", () => {
+          return request
+            .get("/api/articles/999")
+            .expect(404)
+            .then(res => {
+              expect(res.body.msg).to.equal("Not Found");
+            });
+        });
+        it("GET status:405 responds with error message when method not allowed", () => {
+          const reqTypes = ["post", "put"];
+          return Promise.all(
+            reqTypes.map(reqType => {
+              return request[reqType]("/api/articles/1")
+                .expect(405)
+                .then(res => {
+                  expect(res.body.msg).to.equal("Method Not Allowed");
+                });
+            })
+          );
+        });
+        it("POST status:422 responds with error when update request cannot be processed", () => {
+          return request
+            .patch("/api/articles/1")
+            .send({
+              article_id: 5
+            })
+            .expect(422)
+            .then(res => {
+              expect(res.body.msg).to.eql("Not Updated");
+            });
         });
 
-        describe("/:article_id/comments", () => {
+        describe("articles/:article_id/comments", () => {
           it("GET status:200 returns an array of comments for the requested article", () => {
             return request
               .get("/api/articles/1/comments")
@@ -232,36 +229,59 @@ describe("/", () => {
                 });
               });
           });
-
-          describe("errors", () => {
-            it("GET status:400 responds with error message when bad request", () => {
-              return request
-                .get("/api/articles/abc/comments")
-                .expect(400)
-                .then(res => {
-                  expect(res.body.msg).to.equal("Bad Request");
+          it("POST status:201 returns an array of comments for the requested article", () => {
+            return request
+              .post("/api/articles/2/comments")
+              .send({
+                username: "butter_bridge",
+                body: "I've added a new comment"
+              })
+              .expect(201)
+              .then(({ body }) => {
+                expect(body.comment[0]).to.eql({
+                  author: "butter_bridge",
+                  body: "I've added a new comment",
+                  article_id: 2
                 });
-            });
-            it("GET status:404 responds with error message when non existent id is requested", () => {
-              return request
-                .get("/api/articles/999/comments")
-                .expect(404)
-                .then(res => {
-                  expect(res.body.msg).to.equal("Not Found");
-                });
-            });
-            it("GET status:405 responds with error message when method not allowed", () => {
-              const reqTypes = ["post", "put"];
-              return Promise.all(
-                reqTypes.map(reqType => {
-                  return request[reqType]("/api/articles/1/comments")
-                    .expect(405)
-                    .then(res => {
-                      expect(res.body.msg).to.equal("Method Not Allowed");
-                    });
-                })
-              );
-            });
+              })
+              .then(() => {
+                return request
+                  .get("/api/articles/2/comments")
+                  .expect(200)
+                  .then(({ body: { comments } }) => {
+                    expect(comments.length).to.equal(1);
+                  });
+              });
+          });
+        });
+        describe("errors", () => {
+          it("GET status:400 responds with error message when bad request", () => {
+            return request
+              .get("/api/articles/abc/comments")
+              .expect(400)
+              .then(res => {
+                expect(res.body.msg).to.equal("Bad Request");
+              });
+          });
+          it("GET status:404 responds with error message when non existent id is requested", () => {
+            return request
+              .get("/api/articles/999/comments")
+              .expect(404)
+              .then(res => {
+                expect(res.body.msg).to.equal("Not Found");
+              });
+          });
+          it("GET status:405 responds with error message when method not allowed", () => {
+            const reqTypes = ["put"];
+            return Promise.all(
+              reqTypes.map(reqType => {
+                return request[reqType]("/api/articles/1/comments")
+                  .expect(405)
+                  .then(res => {
+                    expect(res.body.msg).to.equal("Method Not Allowed");
+                  });
+              })
+            );
           });
         });
       });

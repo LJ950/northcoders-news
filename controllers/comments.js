@@ -1,4 +1,7 @@
-const { fetchArticleComments } = require("../models/comments");
+const {
+  fetchArticleComments,
+  addCommentToArticle
+} = require("../models/comments");
 
 exports.getCommentsByArticle = (req, res, next) => {
   fetchArticleComments(req.params, req.query)
@@ -8,6 +11,14 @@ exports.getCommentsByArticle = (req, res, next) => {
       } else {
         return Promise.reject({ status: 404 });
       }
+    })
+    .catch(next);
+};
+
+exports.createComment = (req, res, next) => {
+  addCommentToArticle(req)
+    .then(comment => {
+      res.status(201).json({ comment });
     })
     .catch(next);
 };
