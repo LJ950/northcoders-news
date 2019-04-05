@@ -1,6 +1,5 @@
 const express = require("express");
 const articlesRouter = express.Router();
-const commentsRouter = express.Router();
 const {
   getArticles,
   getArticleByID,
@@ -24,4 +23,4 @@ articlesRouter
   .post(createComment)
   .all(methodNotAllowed);
 
-module.exports = { articlesRouter, commentsRouter };
+module.exports = { articlesRouter };
