@@ -1,6 +1,9 @@
 const connection = require("../db/connection");
 
-exports.fetchArticles = ({ article_id }) => {
+exports.fetchArticles = (
+  { article_id },
+  { author, topic, sort_by = "created_at", order = "desc" }
+) => {
   return connection
     .select([
       "articles.article_id",
@@ -17,7 +20,10 @@ exports.fetchArticles = ({ article_id }) => {
     .groupBy("articles.article_id")
     .where(builder => {
       if (article_id) builder.where("articles.article_id", "=", article_id);
-    });
+      if (author) builder.where("articles.author", "=", author);
+      if (topic) builder.where("articles.topic", "=", topic);
+    })
+    .orderBy(sort_by, order);
 };
 
 exports.updateArticle = ({ params, body }) => {

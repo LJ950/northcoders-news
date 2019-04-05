@@ -44,7 +44,6 @@ describe("/", () => {
       });
     });
     describe("/articles", () => {
-      //GETs
       it("GET status:200 returns all articles", () => {
         return request
           .get("/api/articles")
@@ -60,6 +59,52 @@ describe("/", () => {
               "created_at",
               "votes"
             );
+          });
+      });
+      it("GET status:200 accepts author query", () => {
+        return request
+          .get("/api/articles?author=butter_bridge")
+          .expect(200)
+          .then(({ body }) => {
+            body.articles.forEach(article => {
+              expect(article.author).to.eql("butter_bridge");
+            });
+          });
+      });
+      it("GET status:200 accepts topic query", () => {
+        return request
+          .get("/api/articles?topic=mitch")
+          .expect(200)
+          .then(({ body }) => {
+            body.articles.forEach(article => {
+              expect(article.topic).to.eql("mitch");
+            });
+          });
+      });
+      it("GET status:200 also accepts sort_by query which default to date (order defaults to descending)", () => {
+        return request
+          .get("/api/articles?author=icellusedkars&sort_by=title")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.sortedBy("title", {
+              descending: true
+            });
+            body.articles.forEach(article => {
+              expect(article.author).to.eql("icellusedkars");
+            });
+          });
+      });
+      it("GET status:200 also accepts order query which defaults to descending", () => {
+        return request
+          .get("/api/articles?topic=mitch&sort_by=author&order=asc")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).to.be.sortedBy("author", {
+              ascending: true
+            });
+            body.articles.forEach(article => {
+              expect(article.topic).to.eql("mitch");
+            });
           });
       });
       describe("articles/:article_id", () => {

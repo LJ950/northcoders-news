@@ -5,13 +5,13 @@ const {
 } = require("../models/articles");
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles(req.params).then(articles => {
+  fetchArticles(req.params, req.query).then(articles => {
     res.status(200).json({ articles });
   });
 };
 
 exports.getArticleByID = (req, res, next) => {
-  fetchArticles(req.params)
+  fetchArticles(req.params, req.query)
     .then(([articles]) => {
       if (articles) {
         res.status(200).json({ articles });
