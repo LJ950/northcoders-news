@@ -2,7 +2,8 @@ const {
   fetchComment,
   fetchArticleComments,
   addCommentToArticle,
-  editComment
+  editComment,
+  deleteComment
 } = require("../models/comments");
 
 exports.getCommentByID = (req, res, next) => {
@@ -40,4 +41,10 @@ exports.updateCommentByID = (req, res, next) => {
       res.status(201).json({ comment });
     })
     .catch(next);
+};
+
+exports.deleteCommentByID = (req, res, next) => {
+  deleteComment(req.params).then(() => {
+    res.status(204).send({ msg: "deleted" });
+  });
 };

@@ -43,6 +43,74 @@ describe("/", () => {
           });
       });
     });
+    describe("/users", () => {
+      it("GET status:200 returns all users", () => {
+        return request
+          .get("/api/users")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body).to.eql({
+              users: [
+                {
+                  avatar_url:
+                    "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+                  name: "jonny",
+                  username: "butter_bridge"
+                },
+                {
+                  avatar_url:
+                    "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+                  name: "sam",
+                  username: "icellusedkars"
+                },
+                {
+                  avatar_url:
+                    "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+                  name: "paul",
+                  username: "rogersop"
+                }
+              ]
+            });
+          });
+      });
+    });
+    describe("/users/:username", () => {
+      it("GET status:200 requested user", () => {
+        return request
+          .get("/api/users/butter_bridge")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.user).to.eql({
+              username: "butter_bridge",
+              name: "jonny",
+              avatar_url:
+                "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+            });
+          });
+      });
+      describe("errors", () => {
+        it("GET status:404 responds with error message when non existent id is requested", () => {
+          return request
+            .get("/api/users/abc")
+            .expect(404)
+            .then(res => {
+              expect(res.body.msg).to.equal("Not Found");
+            });
+        });
+        it("POST PUT PATCH DELETE status:405 responds with error message when method not allowed", () => {
+          const reqTypes = ["post", "put", "patch", "delete"];
+          return Promise.all(
+            reqTypes.map(reqType => {
+              return request[reqType]("/api/users/1")
+                .expect(405)
+                .then(res => {
+                  expect(res.body.msg).to.equal("Method Not Allowed");
+                });
+            })
+          );
+        });
+      });
+    });
     describe("/articles", () => {
       it("GET status:200 returns all articles", () => {
         return request
@@ -128,7 +196,7 @@ describe("/", () => {
             });
         });
 
-        it("POST status:201 responds with updated article", () => {
+        it("PATCH status:201 responds with updated article", () => {
           return request
             .patch("/api/articles/1")
             .send({
@@ -148,7 +216,7 @@ describe("/", () => {
               });
             });
         });
-        it("POST status:201 increments the vote count", () => {
+        it("PATCH status:201 increments the vote count", () => {
           return request
             .patch("/api/articles/1")
             .send({
@@ -159,7 +227,7 @@ describe("/", () => {
               expect(body.articles.votes).to.eql(110);
             });
         });
-        it("POST status:201 decrements the vote count", () => {
+        it("PATCH status:201 decrements the vote count", () => {
           return request
             .patch("/api/articles/1")
             .send({
@@ -204,7 +272,7 @@ describe("/", () => {
               expect(res.body.msg).to.equal("Not Found");
             });
         });
-        it("GET status:405 responds with error message when method not allowed", () => {
+        it("POST PUT status:405 responds with error message when method not allowed", () => {
           const reqTypes = ["post", "put"];
           return Promise.all(
             reqTypes.map(reqType => {
@@ -216,7 +284,7 @@ describe("/", () => {
             })
           );
         });
-        it("POST status:422 responds with error when update request cannot be processed", () => {
+        it("PATCH status:422 responds with error when update request cannot be processed", () => {
           return request
             .patch("/api/articles/1")
             .send({
@@ -329,33 +397,49 @@ describe("/", () => {
             );
           });
         });
-        describe("comments/:comment_id", () => {
-          it("GET status:200 returns the requested comment", () => {
+      });
+    });
+    describe("comments/:comment_id", () => {
+      it("GET status:200 returns the requested comment", () => {
+        return request
+          .get("/api/comments/1")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comment).to.eql({
+              comment_id: 1,
+              article_id: 9,
+              author: "butter_bridge",
+              body:
+                "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+              created_at: "2017-11-22T12:36:03.389Z",
+              votes: 16
+            });
+          });
+      });
+      it("PATCH status:200 updates comment by comment_id and return updated comment", () => {
+        return request
+          .patch("/api/comments/1")
+          .send({
+            body: "I've updated this comment",
+            inc_votes: 1
+          })
+          .expect(201)
+          .then(({ body }) => {
+            expect(body.comment[0]).to.eql({
+              author: "butter_bridge",
+              body: "I've updated this comment",
+              votes: 17,
+              article_id: 9,
+              comment_id: 1,
+              created_at: "2017-11-22T12:36:03.389Z"
+            });
+          })
+          .then(() => {
             return request
               .get("/api/comments/1")
               .expect(200)
-              .then(({ body }) => {
-                expect(body.comment).to.eql({
-                  comment_id: 1,
-                  article_id: 9,
-                  author: "butter_bridge",
-                  body:
-                    "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-                  created_at: "2017-11-22T12:36:03.389Z",
-                  votes: 16
-                });
-              });
-          });
-          it("PATCH status:200 updates comment by comment_id and return updated comment", () => {
-            return request
-              .patch("/api/comments/1")
-              .send({
-                body: "I've updated this comment",
-                inc_votes: 1
-              })
-              .expect(201)
-              .then(({ body }) => {
-                expect(body.comment[0]).to.eql({
+              .then(({ body: { comment } }) => {
+                expect(comment).to.eql({
                   author: "butter_bridge",
                   body: "I've updated this comment",
                   votes: 17,
@@ -363,65 +447,57 @@ describe("/", () => {
                   comment_id: 1,
                   created_at: "2017-11-22T12:36:03.389Z"
                 });
-              })
-              .then(() => {
-                return request
-                  .get("/api/comments/1")
-                  .expect(200)
-                  .then(({ body: { comment } }) => {
-                    expect(comment).to.eql({
-                      author: "butter_bridge",
-                      body: "I've updated this comment",
-                      votes: 17,
-                      article_id: 9,
-                      comment_id: 1,
-                      created_at: "2017-11-22T12:36:03.389Z"
-                    });
-                  });
               });
           });
-        });
-        describe("errors", () => {
-          it("GET status:400 responds with error message when bad request", () => {
-            return request
-              .get("/api/comments/abc")
-              .expect(400)
+      });
+      it("DELETE status:204 deletes comment by ID", () => {
+        return request
+          .delete("/api/comments/1")
+          .expect(204)
+          .then(() => {
+            return request.get("/api/comments/1").expect(404);
+          });
+      });
+    });
+    describe("errors", () => {
+      it("GET status:400 responds with error message when bad request", () => {
+        return request
+          .get("/api/comments/abc")
+          .expect(400)
+          .then(res => {
+            expect(res.body.msg).to.equal("Bad Request");
+          });
+      });
+      it("GET status:404 responds with error message when non existent id is requested", () => {
+        return request
+          .get("/api/comments/999")
+          .expect(404)
+          .then(res => {
+            expect(res.body.msg).to.equal("Not Found");
+          });
+      });
+      it("POST PUT status:405 responds with error message when method not allowed", () => {
+        const reqTypes = ["post", "put"];
+        return Promise.all(
+          reqTypes.map(reqType => {
+            return request[reqType]("/api/comments/1")
+              .expect(405)
               .then(res => {
-                expect(res.body.msg).to.equal("Bad Request");
+                expect(res.body.msg).to.equal("Method Not Allowed");
               });
+          })
+        );
+      });
+      it("PATCH status:422 responds with error when update request cannot be processed", () => {
+        return request
+          .patch("/api/comments/1")
+          .send({
+            comment_id: 5
+          })
+          .expect(422)
+          .then(res => {
+            expect(res.body.msg).to.eql("Not Updated");
           });
-          it("GET status:404 responds with error message when non existent id is requested", () => {
-            return request
-              .get("/api/comments/999")
-              .expect(404)
-              .then(res => {
-                expect(res.body.msg).to.equal("Not Found");
-              });
-          });
-          it("GET status:405 responds with error message when method not allowed", () => {
-            const reqTypes = ["post", "put", "delete"];
-            return Promise.all(
-              reqTypes.map(reqType => {
-                return request[reqType]("/api/comments/1")
-                  .expect(405)
-                  .then(res => {
-                    expect(res.body.msg).to.equal("Method Not Allowed");
-                  });
-              })
-            );
-          });
-          it("POST status:422 responds with error when update request cannot be processed", () => {
-            return request
-              .patch("/api/comments/1")
-              .send({
-                comment_id: 5
-              })
-              .expect(422)
-              .then(res => {
-                expect(res.body.msg).to.eql("Not Updated");
-              });
-          });
-        });
       });
     });
   });

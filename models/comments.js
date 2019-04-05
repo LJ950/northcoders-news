@@ -37,3 +37,9 @@ exports.editComment = ({ params, body }) => {
     .increment(votes)
     .returning("*");
 };
+
+exports.deleteComment = ({ comment_id }) => {
+  return connection("comments")
+    .where("comment_id", "=", comment_id)
+    .del();
+};

@@ -36,6 +36,6 @@ exports.updateArticleByID = (req, res, next) => {
 
 exports.deleteArticleByID = (req, res, next) => {
   deleteArticle(req.params).then(() => {
-    res.status(204).send({ msg: "success" });
+    res.status(204).send({ msg: "deleted" });
   });
 };
