@@ -23,7 +23,7 @@ exports.getArticleByID = (req, res, next) => {
 };
 
 exports.updateArticleByID = (req, res, next) => {
-  updateArticle(req)
+  updateArticle(req.params, req.body)
     .then(([articles]) => {
       if (articles) {
         res.status(200).json({ articles });

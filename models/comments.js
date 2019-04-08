@@ -18,14 +18,14 @@ exports.fetchArticleComments = (
     .orderBy(sort_by, order);
 };
 
-exports.addCommentToArticle = ({ params, body }) => {
+exports.addCommentToArticle = (params, body) => {
   body.author = body.username;
   body.article_id = params.article_id;
   delete body.username;
   return connection("comments").insert(body, Object.keys(body));
 };
 
-exports.editComment = ({ params, body }) => {
+exports.editComment = (params, body) => {
   const votes = { votes: 0 };
   if (body.inc_votes) {
     votes.votes = body.inc_votes;

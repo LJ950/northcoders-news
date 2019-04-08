@@ -26,7 +26,7 @@ exports.fetchArticles = (
     .orderBy(sort_by, order);
 };
 
-exports.updateArticle = ({ params, body }) => {
+exports.updateArticle = (params, body) => {
   const votes = { votes: 0 };
   if (body.votes) {
     votes.votes = body.votes;

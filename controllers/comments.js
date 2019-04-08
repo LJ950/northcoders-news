@@ -28,7 +28,7 @@ exports.getCommentsByArticle = (req, res, next) => {
 };
 
 exports.createComment = (req, res, next) => {
-  addCommentToArticle(req)
+  addCommentToArticle(req.params, req.body)
     .then(comment => {
       res.status(201).json({ comment });
     })
@@ -36,7 +36,7 @@ exports.createComment = (req, res, next) => {
 };
 
 exports.updateCommentByID = (req, res, next) => {
-  editComment(req)
+  editComment(req.params, req.body)
     .then(comment => {
       res.status(201).json({ comment });
     })
