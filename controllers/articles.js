@@ -5,9 +5,11 @@ const {
 } = require("../models/articles");
 
 exports.getArticles = (req, res, next) => {
-  fetchArticles(req.params, req.query).then(articles => {
-    res.status(200).json({ articles });
-  });
+  fetchArticles(req.params, req.query)
+    .then(articles => {
+      res.status(200).json({ articles });
+    })
+    .catch(next);
 };
 
 exports.getArticleByID = (req, res, next) => {
@@ -35,7 +37,9 @@ exports.updateArticleByID = (req, res, next) => {
 };
 
 exports.deleteArticleByID = (req, res, next) => {
-  deleteArticle(req.params).then(() => {
-    res.status(204).send({ msg: "deleted" });
-  });
+  deleteArticle(req.params)
+    .then(() => {
+      res.status(204).send({ msg: "deleted" });
+    })
+    .catch(next);
 };

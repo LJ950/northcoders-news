@@ -1,9 +1,11 @@
 const { fetchUsers } = require("../models/users");
 
 exports.getUsers = (req, res, next) => {
-  fetchUsers(req.params).then(users => {
-    res.status(200).json({ users });
-  });
+  fetchUsers(req.params)
+    .then(users => {
+      res.status(200).json({ users });
+    })
+    .catch(next);
 };
 
 exports.getUserByID = (req, res, next) => {
