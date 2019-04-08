@@ -1,8 +1,9 @@
 exports.formatArticleData = function(articleData) {
   const newData = [];
   articleData.forEach(function(article) {
-    article.created_at = new Date(article.created_at);
-    newData.push(article);
+    const duplicateData = { ...article };
+    duplicateData.created_at = new Date(duplicateData.created_at);
+    newData.push(duplicateData);
   });
   return newData;
 };

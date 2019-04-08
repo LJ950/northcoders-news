@@ -7,7 +7,7 @@ const {
 
 describe("seedArticles", () => {
   describe("formatArticleData", () => {
-    it("does not mutate the array", () => {
+    it("creates a new array", () => {
       const data = [
         {
           title: "Running a Node App",
@@ -27,6 +27,30 @@ describe("seedArticles", () => {
           body:
             "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
           created_at: myDate
+        }
+      ]);
+    });
+    it("does not mutate the original array", () => {
+      const data = [
+        {
+          title: "Running a Node App",
+          topic: "coding",
+          author: "jessjelly",
+          body:
+            "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+          created_at: 1471522072389
+        }
+      ];
+      const myDate = new Date(1471522072389);
+      formatArticleData(data);
+      expect(data).to.eql([
+        {
+          title: "Running a Node App",
+          topic: "coding",
+          author: "jessjelly",
+          body:
+            "This is part two of a series on how to get up and running with Systemd and Node.js. This part dives deeper into how to successfully run your app with systemd long-term, and how to set it up in a production environment.",
+          created_at: 1471522072389
         }
       ]);
     });
@@ -138,7 +162,7 @@ describe("seedComments", () => {
       "Living in the shadow of a great man": 1,
       "They're not exactly dogs, are they?": 2
     };
-    it("does not mutate the array", () => {
+    it("creates a new array", () => {
       const comments = [
         {
           body:
@@ -161,6 +185,31 @@ describe("seedComments", () => {
         }
       ]);
     });
+    it("does not mutate the original array", () => {
+      const comments = [
+        {
+          body:
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          belongs_to: "Living in the shadow of a great man",
+          created_by: "butter_bridge",
+          votes: 14,
+          created_at: 1479818163389
+        }
+      ];
+      const myDate1 = new Date(1479818163389);
+      formatCommentData(comments, articlesID);
+      expect(comments).to.eql([
+        {
+          body:
+            "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          belongs_to: "Living in the shadow of a great man",
+          created_by: "butter_bridge",
+          votes: 14,
+          created_at: 1479818163389
+        }
+      ]);
+    });
+
     it("updates property belongs_to to article_id", () => {
       const comment = [
         {
