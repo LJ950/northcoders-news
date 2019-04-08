@@ -11,14 +11,17 @@ exports.routeNotFound = (err, req, res, next) => {
   } else next(err);
 };
 
-exports.methodNotAllowed = (req, res, next) => {
-  res.status(405).send({ msg: "Method Not Allowed" });
-};
-
 exports.unprocessableEntity = (err, req, res, next) => {
-  res.status(422).send({ msg: "Not Updated" });
+  const unprocCodes = ["23505"];
+  if (err.status === 422 || unprocCodes.includes(err.code)) {
+    res.status(422).send({ msg: "Not Updated" });
+  } else next(err);
 };
 
 exports.handle500 = (err, req, res, next) => {
   res.status(500).send({ msg: "Internal Server Error" });
+};
+
+exports.methodNotAllowed = (req, res, next) => {
+  res.status(405).send({ msg: "Method Not Allowed" });
 };

@@ -3,7 +3,6 @@ const apiRouter = require("./routes/api");
 const {
   badRequest,
   routeNotFound,
-  methodNotAllowed,
   unprocessableEntity,
   handle500
 } = require("./errors");
@@ -17,8 +16,6 @@ app.use("/api", apiRouter);
 app.use(badRequest);
 
 app.use(routeNotFound);
-
-app.use(methodNotAllowed);
 
 app.use(unprocessableEntity);
 

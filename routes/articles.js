@@ -10,7 +10,10 @@ const { createComment } = require("../controllers/comments");
 const { getCommentsByArticle } = require("../controllers/comments");
 const { methodNotAllowed } = require("../errors/index");
 
-articlesRouter.route("/").get(getArticles);
+articlesRouter
+  .route("/")
+  .get(getArticles)
+  .all(methodNotAllowed);
 articlesRouter
   .route("/:article_id")
   .get(getArticleByID)

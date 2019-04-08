@@ -4,7 +4,10 @@ const { methodNotAllowed } = require("../errors/index");
 
 const { getUsers, getUserByID } = require("../controllers/users");
 
-usersRouter.route("/").get(getUsers);
+usersRouter
+  .route("/")
+  .get(getUsers)
+  .all(methodNotAllowed);
 usersRouter
   .route("/:username")
   .get(getUserByID)
