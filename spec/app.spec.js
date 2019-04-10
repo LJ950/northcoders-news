@@ -222,7 +222,7 @@ describe("/", () => {
             .get("/api/articles/2")
             .expect(200)
             .then(({ body }) => {
-              expect(body.articles).to.contain.keys(
+              expect(body.article).to.contain.keys(
                 "article_id",
                 "title",
                 "topic",
@@ -232,8 +232,8 @@ describe("/", () => {
                 "votes",
                 "comment_count"
               );
-              expect(+body.articles.comment_count).to.equal(1);
-              expect(body.articles.article_id).to.equal(2);
+              expect(+body.article.comment_count).to.equal(1);
+              expect(body.article.article_id).to.equal(2);
             });
         });
 

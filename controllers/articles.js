@@ -14,9 +14,9 @@ exports.getArticles = (req, res, next) => {
 
 exports.getArticleByID = (req, res, next) => {
   fetchArticles(req.params, req.query)
-    .then(([articles]) => {
-      if (articles) {
-        res.status(200).json({ articles });
+    .then(([article]) => {
+      if (article) {
+        res.status(200).json({ article });
       } else {
         return Promise.reject({ status: 404 });
       }
