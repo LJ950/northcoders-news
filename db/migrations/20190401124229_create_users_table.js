@@ -3,7 +3,8 @@ exports.up = function(knex, Promise) {
     usersTable
       .string("username")
       .primary()
-      .unique();
+      .unique()
+      .notNullable();
     usersTable.string("avatar_url");
     usersTable.string("name");
   });

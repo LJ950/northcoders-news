@@ -1,17 +1,22 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable("comments", commentsTable => {
-    commentsTable.increments("comment_id").primary();
+    commentsTable
+      .increments("comment_id")
+      .primary()
+      .notNullable();
     commentsTable
       .string("author")
       .references("username")
-      .inTable("users");
+      .inTable("users")
+      .notNullable();
     commentsTable.text("body");
     commentsTable.integer("votes").defaultTo(0);
     commentsTable
       .integer("article_id")
       .references("article_id")
       .inTable("articles")
-      .onDelete("cascade");
+      .onDelete("cascade")
+      .notNullable();
     commentsTable.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };

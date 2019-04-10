@@ -134,7 +134,7 @@ describe("seedComments", () => {
         created_at: 533132514171
       }
     ];
-    it("returns a single article_id object", () => {
+    it("returns an object with title as key and article_id as value", () => {
       expect(
         indexArticleTitle([
           {
@@ -149,7 +149,7 @@ describe("seedComments", () => {
         ])
       ).to.eql({ "Living in the shadow of a great man": 1 });
     });
-    it("returns article_id object", () => {
+    it("returns an object with mulitple title as keys and article_ids as values", () => {
       expect(indexArticleTitle(articles)).to.eql({
         "Living in the shadow of a great man": 1,
         "They're not exactly dogs, are they?": 2
