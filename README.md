@@ -1,11 +1,29 @@
 # northcoders-news
 
+Reddit like forum which allows users to read and post articles and comments
+
+## Installation
+
+- Install all dependencies with npm install
+- Run npm run setup-db to setup the databases
+- Run npm run migrate-latest to build the tables
+- Run npm run seed to seed the both dev and test databases
+
+- npm run dev will start the server locally using the dev database
+
+## Testing
+
+- npm test runs the test suite with the test database
+- See test descriptions for what is being tested
+
+## Deployment
+
 ## Available Scripts
 
 Create development and test databases locally:
 
 ```bash
-npm run setup-dbs
+npm run setup-db
 ```
 
 Create a new migration file:
@@ -49,3 +67,7 @@ Run the server with `node`:
 ```bash
 npm start
 ```
+
+##Author
+
+Luke Jones as part of NorthCoders training course

@@ -14,11 +14,13 @@ describe("/", () => {
   after(() => connection.destroy());
 
   describe("/api", () => {
-    it("GET status:200", () => {
-      return request.get("/api").expect(200);
-      // .then(({ body }) => {
-      //   expect(body.ok).to.equal(true);
-      // });
+    it("GET status:200 returns endpoints json", () => {
+      return request
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body).to.be.an("object");
+        });
     });
     describe("/topics", () => {
       it("GET status:200 returns all topics", () => {
@@ -565,7 +567,7 @@ describe("/", () => {
               expect(res.body.msg).to.eql("Not Found");
             });
         });
-        it.only("PATCH status:404 responds with error when non existent comment is deleted", () => {
+        it("PATCH status:404 responds with error when non existent comment is deleted", () => {
           return request
             .delete("/api/comments/999")
             .expect(404)
