@@ -29,7 +29,7 @@ exports.getCommentsByArticle = (req, res, next) => {
 
 exports.createComment = (req, res, next) => {
   addCommentToArticle(req.params, req.body)
-    .then(comment => {
+    .then(([comment]) => {
       res.status(201).json({ comment });
     })
     .catch(next);
@@ -38,15 +38,17 @@ exports.createComment = (req, res, next) => {
 exports.updateCommentByID = (req, res, next) => {
   editComment(req.params, req.body)
     .then(comment => {
-      res.status(201).json({ comment });
+      if (comment.length) res.status(200).json({ comment });
+      else return Promise.reject({ status: 404 });
     })
     .catch(next);
 };
 
 exports.deleteCommentByID = (req, res, next) => {
   deleteComment(req.params)
-    .then(() => {
-      res.status(204).send({ msg: "deleted" });
+    .then(sqlRes => {
+      if (sqlRes) res.status(204).send({ msg: "deleted" });
+      else return Promise.reject({ status: 404 });
     })
     .catch(next);
 };

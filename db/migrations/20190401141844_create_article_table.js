@@ -4,8 +4,8 @@ exports.up = function(knex, Promise) {
       .increments("article_id")
       .primary()
       .notNullable();
-    articlesTable.string("title");
-    articlesTable.text("body");
+    articlesTable.string("title").notNullable();
+    articlesTable.text("body").notNullable();
     articlesTable.integer("votes").defaultTo(0);
     articlesTable
       .string("topic")

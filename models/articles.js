@@ -28,9 +28,9 @@ exports.fetchArticles = (
 
 exports.updateArticle = (params, body) => {
   const votes = { votes: 0 };
-  if (body.votes) {
-    votes.votes = body.votes;
-    delete body.votes;
+  if (body.inc_votes) {
+    votes.votes = body.inc_votes;
+    delete body.inc_votes;
   }
   return connection("articles")
     .where("article_id", "=", params.article_id)

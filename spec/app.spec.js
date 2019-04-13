@@ -215,6 +215,30 @@ describe("/", () => {
             })
           );
         });
+        it("GET status:404 gives an error message when topic does not exist", () => {
+          return request
+            .get("/api/articles?topic=notatopic")
+            .expect(404)
+            .then(res => {
+              expect(res.body.msg).to.equal("Not Found");
+            });
+        });
+        it("GET status:404 gives an error message when author does not exist", () => {
+          return request
+            .get("/api/articles?author=notanauthor")
+            .expect(404)
+            .then(res => {
+              expect(res.body.msg).to.equal("Not Found");
+            });
+        });
+        it("GET status:404 gives an error message when asked to sort by non existent column", () => {
+          return request
+            .get("/api/articles?author=butter_bridge&sort_by=notacolumn")
+            .expect(400)
+            .then(res => {
+              expect(res.body.msg).to.equal("Bad Request");
+            });
+        });
       });
       describe("articles/:article_id", () => {
         it("GET status:200 and returns requested article", () => {
@@ -237,7 +261,7 @@ describe("/", () => {
             });
         });
 
-        it("PATCH status:201 responds with updated article", () => {
+        it("PATCH status:200 responds with updated article", () => {
           return request
             .patch("/api/articles/1")
             .send({
@@ -246,7 +270,7 @@ describe("/", () => {
             })
             .expect(200)
             .then(({ body }) => {
-              expect(body.articles).to.eql({
+              expect(body.article).to.eql({
                 article_id: 1,
                 author: "butter_bridge",
                 title: "Updated Title",
@@ -257,26 +281,26 @@ describe("/", () => {
               });
             });
         });
-        it("PATCH status:201 increments the vote count", () => {
+        it("PATCH status:200 increments the vote count", () => {
           return request
             .patch("/api/articles/1")
             .send({
-              votes: 10
+              inc_votes: 10
             })
             .expect(200)
             .then(({ body }) => {
-              expect(body.articles.votes).to.eql(110);
+              expect(body.article.votes).to.eql(110);
             });
         });
         it("PATCH status:201 decrements the vote count", () => {
           return request
             .patch("/api/articles/1")
             .send({
-              votes: -10
+              inc_votes: -10
             })
             .expect(200)
             .then(({ body }) => {
-              expect(body.articles.votes).to.eql(90);
+              expect(body.article.votes).to.eql(90);
             });
         });
 
@@ -392,7 +416,7 @@ describe("/", () => {
               })
               .expect(201)
               .then(({ body }) => {
-                expect(body.comment[0]).to.eql({
+                expect(body.comment).to.eql({
                   author: "butter_bridge",
                   body: "I've added a new comment",
                   article_id: 2
@@ -465,7 +489,7 @@ describe("/", () => {
             body: "I've updated this comment",
             inc_votes: 1
           })
-          .expect(201)
+          .expect(200)
           .then(({ body }) => {
             expect(body.comment[0]).to.eql({
               author: "butter_bridge",
@@ -529,6 +553,25 @@ describe("/", () => {
                 });
             })
           );
+        });
+        it("PATCH status:404 responds with error when non existent comment is patched", () => {
+          return request
+            .patch("/api/comments/999")
+            .send({
+              body: "update body"
+            })
+            .expect(404)
+            .then(res => {
+              expect(res.body.msg).to.eql("Not Found");
+            });
+        });
+        it.only("PATCH status:404 responds with error when non existent comment is deleted", () => {
+          return request
+            .delete("/api/comments/999")
+            .expect(404)
+            .then(res => {
+              expect(res.body.msg).to.eql("Not Found");
+            });
         });
         it("PATCH status:422 responds with error when update request cannot be processed", () => {
           return request

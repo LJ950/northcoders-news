@@ -6,10 +6,11 @@ exports.up = function(knex, Promise) {
       .notNullable();
     commentsTable
       .string("author")
+      .notNullable()
       .references("username")
       .inTable("users")
       .notNullable();
-    commentsTable.text("body");
+    commentsTable.text("body").notNullable();
     commentsTable.integer("votes").defaultTo(0);
     commentsTable
       .integer("article_id")
