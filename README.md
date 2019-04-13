@@ -1,6 +1,6 @@
 # northcoders-news
 
-Reddit like forum which allows users to read and post articles and comments
+API for Reddit like forum which allows users to read and post articles and comments
 
 ## Installation
 
