@@ -1,5 +1,6 @@
 const express = require("express");
 const apiRouter = require("./routes/api");
+const cors = require("cors");
 const {
   badRequest,
   routeNotFound,
@@ -8,6 +9,7 @@ const {
 } = require("./errors");
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 
