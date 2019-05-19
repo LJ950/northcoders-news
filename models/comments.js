@@ -19,10 +19,18 @@ exports.fetchArticleComments = (
 };
 
 exports.addCommentToArticle = (params, body) => {
-  body.author = body.username;
-  body.article_id = params.article_id;
-  delete body.username;
-  return connection("comments").insert(body, Object.keys(body));
+  console.log(body.username, body.body, params.article_id);
+  // body.author = body.username;
+  // body.article_id = params.article_id;
+  return connection("comments")
+    .insert({
+      author: body.username,
+      body: body.body,
+      article_id: params.article_id
+    })
+    .returning(["comment_id", "author", "body", "article_id"]);
+  // delete body.username;
+  // return connection("comments").insert(body, Object.keys(body));
 };
 
 exports.editComment = (params, body) => {

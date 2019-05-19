@@ -258,7 +258,7 @@ describe("/", () => {
                 "votes",
                 "comment_count"
               );
-              expect(+body.article.comment_count).to.equal(1);
+              expect(+body.article.comment_count).to.equal(0);
               expect(body.article.article_id).to.equal(2);
             });
         });
@@ -419,6 +419,7 @@ describe("/", () => {
               .expect(201)
               .then(({ body }) => {
                 expect(body.comment).to.eql({
+                  comment_id: 19,
                   author: "butter_bridge",
                   body: "I've added a new comment",
                   article_id: 2
